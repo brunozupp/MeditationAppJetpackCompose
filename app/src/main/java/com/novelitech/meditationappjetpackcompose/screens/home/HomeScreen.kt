@@ -39,7 +39,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.novelitech.meditationappjetpackcompose.R
+import com.novelitech.meditationappjetpackcompose.screens.home.dataclasses.BottomMenuContent
 import com.novelitech.meditationappjetpackcompose.screens.home.dataclasses.Feature
+import com.novelitech.meditationappjetpackcompose.ui.theme.AquaBlue
 import com.novelitech.meditationappjetpackcompose.ui.theme.Beige1
 import com.novelitech.meditationappjetpackcompose.ui.theme.Beige2
 import com.novelitech.meditationappjetpackcompose.ui.theme.Beige3
@@ -82,7 +84,89 @@ fun HomeScreen() {
             )
         }
 
+        BottomMenu(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            items = listOf(
+                BottomMenuContent("Home", R.drawable.ic_home),
+                BottomMenuContent("Meditate", R.drawable.ic_bubble),
+                BottomMenuContent("Sleep", R.drawable.ic_moon),
+                BottomMenuContent("Music", R.drawable.ic_music),
+                BottomMenuContent("Profile", R.drawable.ic_profile),
+            )
+        )
+    }
+}
 
+@Composable
+fun BottomMenu(
+    items: List<BottomMenuContent>,
+    modifier: Modifier = Modifier,
+    activeHighlightColor: Color = ButtonBlue,
+    activeTextColor: Color = Color.White,
+    inactiveTextColor: Color = AquaBlue,
+    initialSelectedItemIndex: Int = 0,
+) {
+    var selectedItemIndex by remember {
+        mutableStateOf(initialSelectedItemIndex)
+    }
+
+    Row(
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(DeepBlue)
+            .padding(15.dp)
+    ) {
+
+        items.forEachIndexed { index, item ->
+            BottomMenuItem(
+                item = item,
+                isSelected = index == selectedItemIndex,
+                activeHighlightColor = activeHighlightColor,
+                activeTextColor = activeTextColor,
+                inactiveTextColor = inactiveTextColor,
+            ) {
+                selectedItemIndex = index
+            }
+        }
+    }
+}
+
+@Composable
+fun BottomMenuItem(
+    item: BottomMenuContent,
+    isSelected: Boolean = false,
+    activeHighlightColor: Color,
+    activeTextColor: Color,
+    inactiveTextColor: Color,
+    onItemClicked: () -> Unit
+) {
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.clickable { onItemClicked() }
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (isSelected) activeHighlightColor else Color.Transparent)
+                .padding(10.dp)
+        ) {
+
+            Icon(
+                painter = painterResource(id = item.iconId),
+                contentDescription = item.title,
+                tint = if(isSelected) activeTextColor else inactiveTextColor,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        Text(
+            text = item.title,
+            color = if(isSelected) activeTextColor else inactiveTextColor
+        )
     }
 }
 
@@ -102,12 +186,12 @@ fun GreetingSection(
         ) {
             Text(
                 text = "Good Morning: $name",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 color = TextWhite,
             )
             Text(
                 text = "We wish you have a good day!",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = TextWhite,
             )
         }
@@ -176,12 +260,12 @@ fun CurrentMeditation(
         ) {
             Text(
                 text = "Daily Thought",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 color = TextWhite,
             )
             Text(
                 text = "Meditation º 3-10 min",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = TextWhite,
             )
         }
@@ -213,7 +297,8 @@ fun FeatureSection(
     ) {
         Text(
             text = "Features",
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.headlineSmall,
+            color = TextWhite,
             modifier = Modifier.padding(16.dp)
         )
         LazyVerticalGrid(
@@ -320,7 +405,7 @@ fun FeatureItem(
         ) {
             Text(
                 text = feature.title,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.titleLarge,
                 lineHeight = 26.sp,
                 color = TextWhite,
                 modifier = Modifier.align(Alignment.TopStart)
